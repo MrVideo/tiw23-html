@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Pier-zon - Add to cart error</title>
+</head>
+
+<body>
+<header>
+    <h1>Pier-zon</h1>
+    <h3>Something went wrong</h3>
+</header>
+
+<div class="centered-content">
+    <p>Unable to add that item to the cart. Please try again.</p>
+    <a th:href="@{/home}">Return home</a>
+</div>
+
+<footer>
+    <p>&copy; 2023 Pier Paolo Lanzi &amp; Mario Merlo</p>
+</footer>
+</body>
+</html>

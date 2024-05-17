@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Pier-zon - Cart</title>
+</head>
+
+<body>
+    <header>
+        <h1>Pier-zon</h1>
+        <h3>Your shopping cart</h3>
+    </header>
+
+    <nav>
+        <h3><a th:href="@{/home}">Home</a></h3>
+        <h3><a th:href="@{/orders}">Orders</a></h3>
+        <h3><a th:href="@{/cart}">Shopping cart</a></h3>
+        <form th:action="@{/search}" method="post">
+            <input type="text" placeholder="Search for..." name="query" required="required">
+        </form>
+    </nav>
+
+    <div class="centered-content">
+        <div th:if="${session.cart == null || session.cart.isEmpty()}" class="centered-content">
+            <h3>Your cart is empty</h3>
+            <p>Why don't you go and buy something?</p>
+        </div>
+
+        <div class="centered-content" th:each="cartEntry, iterStat : ${session.cart.entrySet()}" th:id="${!iterStat.last} ? 'bordered'">
+            <h3>Supplier: <span th:text="${session.nameMap.get(cartEntry.key)}"></span></h3>
+
+            <table th:each="product : ${cartEntry.getValue()}">
+                <thead>
+                <tr>
+                    <th>Product photo</th>
+                    <th>Product name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><img class="thumbnail" th:src="@{'data:image/jpg;base64,' + ${#strings.toString(product.getProductBean().getPhoto())}}"></td>
+                    <td th:text="${product.getProductBean().getName()}"></td>
+                    <td><span th:text="${#numbers.formatDecimal(product.getProductBean().getPrice(), 1, 'POINT', 2, 'COMMA')}">12,34</span>&euro;</td>
+                    <td th:text="${product.getQuantity()}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3>Item total: <span th:text="${#numbers.formatDecimal(session.totals.get(cartEntry.key), 1, 'POINT', 2, 'COMMA')}"></span>&euro;</h3>
+            <h3>Shipping: <span th:text="${#numbers.formatDecimal(session.shipping.get(cartEntry.key), 1, 'POINT', 2, 'COMMA')}"></span>&euro;</h3>
+            <h3>Total: <span th:text="${#numbers.formatDecimal(session.totals.get(cartEntry.key) + session.shipping.get(cartEntry.key), 1, 'POINT', 2, 'COMMA')}"></span>&euro;</h3>
+            <form th:action="@{/cart/placeorder(supplierId=${cartEntry.key})}" method="post">
+                <input type="submit" name="order" value="Order">
+            </form>
+            <br>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Pier Paolo Lanzi &amp; Mario Merlo</p>
+        <a th:href="@{/logout}">Log out</a>
+    </footer>
+</body>
+</html>

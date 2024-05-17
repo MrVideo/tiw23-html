@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;700&display=swap');
+
+html {
+    font-family: Quicksand, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-weight: normal;
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    background-color: #77c0f1;
+    align-self: center;
+    justify-self: center;
+    text-align: center;
+    border-bottom: 1px solid black;
+    min-height: 50px;
+}
+
+nav {
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    align-items: center;
+    justify-content: space-evenly;
+    border-bottom: 1px solid black;
+}
+
+footer {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    align-items: center;
+    background-color: #77c0f1;
+    border-top: 1px solid black;
+    padding-bottom: 2%;
+    min-height: 50px;
+}
+
+table {
+    width: 85%;
+    border-collapse: collapse;
+    text-align: center;
+    word-wrap: break-word;
+    table-layout: fixed;
+}
+
+tbody tr:hover {
+    background-color: #77c0f1;
+}
+
+h1 {
+    font-weight: bold;
+}
+
+a, a:visited {
+    color: #000;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+.thumbnail {
+    max-height: 100px;
+}
+
+.centered-content {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    align-self: center;
+    flex: 1;
+}
+
+#login-box {
+    text-align: center;
+}
+
+#bordered {
+    border-bottom: 1px solid black;
+}
+
+#inner-table {
+    width: 100%;
+}

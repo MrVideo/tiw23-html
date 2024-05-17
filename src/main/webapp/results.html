@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Pier-zon - Search results</title>
+</head>
+
+<body>
+    <header>
+        <h1>Pier-zon</h1>
+        <h3 th:if="${session.keyword != null && !session.keyword.isEmpty()}">Search results for &quot;<span th:text="${session.keyword}">Product</span>&quot;</h3>
+        <h3 th:if="${session.keyword == null || session.keyword.isEmpty()}">Search error</h3>
+    </header>
+
+    <nav>
+        <h3><a th:href="@{/home}">Home</a></h3>
+        <h3><a th:href="@{/orders}">Orders</a></h3>
+        <h3><a th:href="@{/cart}">Shopping cart</a></h3>
+        <form th:action="@{/search}" method="post">
+            <input type="text" placeholder="Search for..." name="query" required="required">
+        </form>
+    </nav>
+
+    <div class="centered-content">
+        <div th:if="${session.keyword == null || session.keyword.isEmpty()}" class="centered-content">
+            <h3>Something went wrong</h3>
+            <p>You may have started a search with an empty keyword. Please try again.</p>
+        </div>
+
+        <div th:if="${session.searchResult.isEmpty() && session.keyword != null && !session.keyword.isEmpty()}" class="centered-content">
+            <h3>Oops</h3>
+            <p>We could not find any item corresponding to the keyword &quot;<span id="keyword" th:text="${session.keyword}">Product</span>&quot;</p>
+        </div>
+
+        <div class="centered-content" id="bordered" th:if="${!session.searchResult.isEmpty() && session.keyword != null && !session.keyword.isEmpty()}">
+            <h3>Here's what we've found</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product code</th>
+                        <th>Product name</th>
+                        <th>Lowest price</th>
+                        <th>View details</th>
+                    </tr>
+                </thead>
+                <tbody th:remove="all-but-first">
+                    <tr th:each="product : ${session.searchResult}">
+                        <td th:text="${product.getProductId()}"></td>
+                        <td th:text="${product.getName()}"></td>
+                        <td><span th:text="${#numbers.formatDecimal(product.getPrice(), 1, 'POINT', 2, 'COMMA')}"></span>&euro;</td>
+                        <td><a th:href="@{/results/details(productId=${product.getProductId()})}">More...</a></td>
+                    </tr>
+                    <tr>
+                        <td>Sample ID</td>
+                        <td>Sample name</td>
+                        <td>12.345,67€</td>
+                        <td>More...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${session.showDetails}" class="centered-content">
+            <h3>Product details</h3>
+
+            <div class="centered-content">
+                <h4 th:text="${session.selected.getName()}">Product name</h4>
+                <img th:src="@{'data:image/jpg;base64,' + ${#strings.toString(session.selected.getPhoto())}}">
+                <p th:text="${session.selected.getDescription()}">Product description</p>
+                <br>
+                <h4>More details</h4>
+                <ul>
+                    <li>Product code: <span th:text="${session.selected.getProductId()}">code</span></li>
+                    <li>Category: <span th:text="${session.selected.getCategory()}"></span></li>
+                </ul>
+            </div>
+
+            <div class="centered-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Supplier</th>
+                            <th>Rating</th>
+                            <th>Price per unit</th>
+                            <th>Shipping costs</th>
+                            <th>Free shipping on orders over</th>
+                            <th>Items in cart</th>
+                            <th>Total value in cart</th>
+                            <th>Add to cart</th>
+                        </tr>
+                    </thead>
+                    <tbody th:remove="all-but-first">
+                        <tr th:each="supplier : ${session.suppliers}">
+                            <td th:text="${supplier.getName()}"></td>
+                            <td><span th:text="${#numbers.formatDecimal(supplier.getRating(), 1, 'POINT', 2, 'COMMA')}"></span>/5,00</td>
+                            <td><span th:text="${#numbers.formatDecimal(supplier.getPrice(), 1, 'POINT', 2, 'COMMA')}"></span>&euro;/unit</td>
+                            <td>
+                                <table id="inner-table">
+                                    <tbody>
+                                        <tr th:each="policy : ${supplier.getShippingPolicies()}">
+                                            <td th:if="${policy.getMinItems() == 1}">Up to <span th:text="${policy.getMaxItems()}">X</span> items: <span th:text="${#numbers.formatDecimal(policy.getShipmentCost(), 1, 'POINT', 2, 'COMMA')}">12,34</span>&euro;</td>
+                                            <td th:if="${policy.getMinItems() != 1 && policy.getMaxItems() != 0}"><span th:text="${policy.getMinItems()}">Y</span>-<span th:text="${policy.getMaxItems()}">Z</span> items: <span th:text="${#numbers.formatDecimal(policy.getShipmentCost(), 1, 'POINT', 2, 'COMMA')}">12,34</span>&euro;</td>
+                                            <td th:if="${policy.getMaxItems() == 0}">Over <span th:text="${policy.getMinItems()}">W</span> items: <span th:text="${#numbers.formatDecimal(policy.getShipmentCost(), 1, 'POINT', 2, 'COMMA')}">12,34</span>&euro;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td><span th:text="${#numbers.formatDecimal(supplier.getFreeShippingThreshold(), 1, 'POINT', 2, 'COMMA')}"></span>&euro;</td>
+                            <td th:text="${supplier.getTotalCartQuantity()}"></td>
+                            <td><span th:text="${#numbers.formatDecimal(supplier.getTotalCartValue(), 1, 'POINT', 2, 'COMMA')}"></span>&euro;</td>
+                            <td>
+                                <form th:action="@{/results/addToCart(productId=${session.selected.getProductId()}, supplierId=${supplier.getSupplierId()})}" method="post">
+                                    <input type="number" name="quantity" required="required">
+                                    <input type="submit" name="add" value="Add to cart">
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sample supplier</td>
+                            <td>1,23/5,00</td>
+                            <td>12,34€/unit</td>
+                            <td>
+                                <pre>1-5 items: 5,00€
+                            6-10 items: 2,50€</pre>
+                            </td>
+                            <td>49,99€</td>
+                            <td>12</td>
+                            <td>7.912,34€</td>
+                            <td>Add to cart</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Pier Paolo Lanzi &amp; Mario Merlo</p>
+        <a th:href="@{/logout}">Log out</a>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="main.css" th:href="@{/main.css}" type="text/css">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Pier-zon - Login</title>
+</head>
+
+<body>
+    <header>
+        <h1>Pier-zon</h1>
+        <h2>The biggest online shopping platform</h2>
+    </header>
+
+    <div id="login-box" class="centered-content">
+        <h3>Please log in to continue</h3>
+
+        <form th:action="@{/login}" method="post">
+            <input type="email" required="required" placeholder="email@example.com" name="email" autofocus> <br>
+            <input type="password" required="required" placeholder="Your password" name="password"> <br>
+            <input type="submit" name="login" value="Log in">
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Pier Paolo Lanzi &amp; Mario Merlo</p>
+    </footer>
+</body>
+</html>

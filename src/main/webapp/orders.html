@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Pier-zon - Orders</title>
+</head>
+
+<body>
+    <header>
+        <h1>Pier-zon</h1>
+        <h3>Your orders</h3>
+    </header>
+
+    <nav>
+        <h3><a th:href="@{/home}">Home</a></h3>
+        <h3><a th:href="@{/orders}">Orders</a></h3>
+        <h3><a th:href="@{/cart}">Shopping cart</a></h3>
+        <form th:action="@{/search}" method="post">
+            <input type="text" placeholder="Search for..." name="query" required="required">
+        </form>
+    </nav>
+
+    <div class="centered-content" th:if="${session.orders == null || session.orders.isEmpty()}">
+        <h3>You haven't ordered anything yet</h3>
+        <p>Why don't you go and buy something?</p>
+    </div>
+
+    <div th:each="order, iterStat : ${session.orders}" class="centered-content" th:id="${!iterStat.last} ? 'bordered'" th:if="${!session.orders.isEmpty() && session.orders != null}">
+        <h3>Order number <span th:text="${order.getOrderId()}">123</span></h3>
+        <h4>Ships on <span th:text="${#dates.format(order.getShippingDate(), 'dd-MM-yyyy')}">01-01-1970</span></h4>
+        <ul>
+            <li>Supplier: <span th:text="${order.getSupplierName()}">Sample supplier</span></li>
+            <li>Total cost: <span th:text="${#numbers.formatDecimal(order.getTotalValue(), 1, 'POINT', 2, 'COMMA')}">12.345,67€</span>&euro;</li>
+            <li>Shipping address: <span th:text="${order.getShippingAddress()}">Sample address, ZIP code, State, Country</span></li>
+        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product name</th>
+                    <th>Category</th>
+                    <th>Photo</th>
+                </tr>
+            </thead>
+
+            <tbody th:each="product : ${order.getProducts()}" th:remove="all-but-first">
+                <tr>
+                    <td th:text="${product.getProductId()}"></td>
+                    <td th:text="${product.getName()}"></td>
+                    <td th:text="${product.getCategory()}"></td>
+                    <td><img class="thumbnail" th:src="@{'data:image/jpg;base64,' + ${#strings.toString(product.getPhoto())}}"></td>
+                </tr>
+            <tr>
+                <td>Sample ID</td>
+                <td>Sample name</td>
+                <td>Sample category</td>
+                <td>Sample photo</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Pier Paolo Lanzi &amp; Mario Merlo</p>
+        <a th:href="@{/logout}">Log out</a>
+    </footer>
+</body>
+</html>

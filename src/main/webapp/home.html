@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Pier-zon - Home</title>
+</head>
+
+<body>
+    <header>
+        <h1>Pier-zon</h1>
+        <h3>Welcome back, <span th:text="${session.userData.getFirstName()}">Pier</span></h3>
+    </header>
+
+    <nav>
+        <h3><a th:href="@{/home}">Home</a></h3>
+        <h3><a th:href="@{/orders}">Orders</a></h3>
+        <h3><a th:href="@{/cart}">Shopping cart</a></h3>
+        <form th:action="@{/search}" method="post">
+            <input type="text" placeholder="Search for..." name="query" required="required">
+        </form>
+    </nav>
+
+    <div class="centered-content">
+        <h3>Recently viewed items</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+
+            <tbody th:remove="all-but-first">
+            <tr th:each="product : ${session.products}">
+                <td th:text="${product.getName()}"></td>
+                <td th:text="${product.getDescription()}"></td>
+                <td th:text="${product.getCategory()}"></td>
+                <td><img class="thumbnail" th:src="@{'data:image/jpg;base64,' + ${#strings.toString(product.getPhoto())}}"></td>
+            </tr>
+            <tr>
+                <td>Product name</td>
+                <td>Product description</td>
+                <td>Product category</td>
+                <td>Product photo</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Pier Paolo Lanzi &amp; Mario Merlo</p>
+        <a th:href="@{/logout}">Log out</a>
+    </footer>
+</body>
+</html>

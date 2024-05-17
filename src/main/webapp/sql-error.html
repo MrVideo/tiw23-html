@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" th:href="@{/main.css}">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Pier-zon - Server error</title>
+</head>
+
+<body>
+<header>
+    <h1>Pier-zon</h1>
+    <h3>Something went wrong</h3>
+</header>
+
+<div class="centered-content">
+    <p>Our servers are encountering some issues at the time. Please try again later.</p>
+    <p>You have been automatically logged out.</p>
+    <a th:href="@{/}">Return to login</a>
+</div>
+
+<footer>
+    <p>&copy; 2023 Pier Paolo Lanzi &amp; Mario Merlo</p>
+</footer>
+</body>
+</html>
